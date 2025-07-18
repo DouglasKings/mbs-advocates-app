@@ -1,0 +1,16 @@
+/* -----------------------------------------------------------
+   Global Styles for MBS Advocates Website
+   -----------------------------------------------------------
+   – Tailwind base / components / utilities directives
+   – Place any project-wide custom CSS below the @tailwind blocks
+   – Imported in /src/app/layout.tsx (keep the path unchanged)
+---------------------------------------------------------------- */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Example custom utility (optional) */
+html {
+  scroll-behavior: smooth;
+}
