@@ -26,7 +26,7 @@ export async function sendEmail({
   to,
   subject,
   html,
-  from = "onboarding@resend.dev",
+  from = "onboarding@resend.dev", // This is the default
 }: {
   to: string | string[]
   subject: string

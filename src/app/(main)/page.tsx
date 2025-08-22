@@ -1,3 +1,5 @@
+
+
 /**
  * Home Page Component (Server Component)
  * =====================================
@@ -16,7 +18,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ImageContainer } from "@/components/image-container"
-import { Mail, Phone, MapPin, Star } from 'lucide-react'
+import { Mail, Phone, MapPin, Star, X } from 'lucide-react'
 import { ContactForm } from "@/components/contact-form"
 import { TestimonialForm } from "@/components/testimonial-form"
 import { getApprovedTestimonials } from "@/actions/testimonials"
@@ -65,8 +67,7 @@ export default async function Home() {
 
           {/* Value Proposition */}
           <p className="mb-8 text-lg text-gray-600 sm:text-xl max-w-3xl mx-auto">
-            Empowering legal solutions with integrity, expertise, and a client-centric approach. Your trusted partner
-            for comprehensive legal services in Uganda.
+            MBS Advocates is a dynamic and client-focused law firm dedicated to providing exceptional legal services. Founded on principles of integrity, professionalism, and a deep understanding of the law, we strive to deliver practical and effective solutions tailored to our clients' unique needs.
           </p>
 
           {/* Primary Call-to-Action */}
@@ -86,38 +87,38 @@ export default async function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="mb-12 text-center text-3xl font-bold text-gray-900 sm:text-4xl">About MBS Advocates</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             {/* Firm Description */}
             <div className="space-y-6">
               <p className="text-lg text-gray-700 leading-relaxed">
-                MBS Advocates is a dynamic and client-focused law firm dedicated to providing exceptional legal
-                services. Founded on principles of integrity, professionalism, and a deep understanding of the law, we
-                strive to deliver practical and effective solutions tailored to our clients' unique needs.
+                MBS Advocates is a premier full-service Ugandan law firm established in 2022. Our firm represents an amalgamation of the vast experiences and practices of eminent lawyers, creating a modern institution with deep roots in legal practice. We embody the best qualities of the legal profession: tenacious, adaptable, ready for hard work, and committed to our clients' causes.
               </p>
 
               <p className="text-lg text-gray-700 leading-relaxed">
-                Our team, led by experienced legal professionals like Muhangi George, brings a wealth of knowledge and a
-                meticulous approach to every case. We are committed to upholding the highest standards of legal
-                practice, ensuring that our clients receive diligent representation and sound advice.
+                <span className="font-bold">Our Leadership:</span><br/>
+                Our team is led by experienced legal professionals who bring a wealth of knowledge and a meticulous approach to every case.
+                Muhangi George (Managing Partner): A highly reputed disputes lawyer known for his strategic and effective representation.<br/>
+                Matovu Ronald (Partner): A key partner contributing to the firm's diverse expertise and success.
               </p>
 
               <p className="text-lg text-gray-700 leading-relaxed">
-                At MBS Advocates, we believe in building lasting relationships based on trust and transparency. We are
-                passionate about achieving favorable outcomes for our clients, whether through strategic litigation,
-                meticulous transactional work, or comprehensive advisory services.
+                <span className="font-bold">Our Mission:</span><br/>
+                To provide high-quality, business-oriented, innovative, and cost-effective legal solutions. We are committed to upholding the highest standards of legal practice, ensuring our clients receive diligent representation and sound advice to achieve favorable outcomes.<br/><br/>
+                 <span className="font-bold">Our National and International Reach:</span><br/>
+                With a network of high-quality, experienced lawyers, we are well-placed to service the requirements of our clients across Uganda. We are also adequately equipped to handle cross-border transactions, working with an established legal network to give seamless legal service worldwide.
               </p>
             </div>
 
             {/* Professional Image - Adjusted for better alignment and scaling */}
             {/* Using aspect-w-4 aspect-h-3 to maintain a 4:3 ratio for the image container */}
             <div className="relative w-full aspect-w-4 aspect-h-3 overflow-hidden rounded-lg shadow-lg">
-              <ImageContainer
-                src="/images/team/13.jpg" // Using the provided image path
-                alt="MBS Advocates professional team at work"
-                width={800} // Provide original width for optimization
-                height={600} // Provide original height for optimization
-                className="w-full h-full object-cover" // Ensure image covers its container
-              />
+        <ImageContainer
+          src="/images/team/13.jpg" // Using the provided image path
+          alt="MBS Advocates professional team at work"
+          width={800} // Provide original width for optimization
+          height={600} // Provide original height for optimization
+          className="w-full h-full object-cover" // Ensure image covers its container
+        />
             </div>
           </div>
         </div>
@@ -254,6 +255,20 @@ export default async function Home() {
                 <div className="flex items-center space-x-3 text-gray-700">
                   <Mail className="h-5 w-5 text-gray-600" />
                   <span>mbsadvocatessolicitors@gmail.com</span>
+                </div>
+                {/* X (Twitter) Account */}
+                <div className="flex items-center space-x-3 text-gray-700">
+                  <X className="h-5 w-5 text-gray-600" />
+                  <span>
+                    <a 
+                      href="https://x.com/mbsLawyers" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="hover:text-gray-900 transition-colors"
+                    >
+                      @mbsLawyers
+                    </a>
+                  </span>
                 </div>
               </div>
             </div>
