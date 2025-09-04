@@ -1,56 +1,72 @@
 /**
- * Team Section Component
- * =====================
+ * @file src/components/team-section.tsx
+ * @description A server component that fetches and displays all team members.
  *
- * Displays the MBS Advocates team in a responsive grid layout.
- * Features professional team member cards with photos, titles, and descriptions.
- * Fetches team member data dynamically from Supabase.
+ * FINAL FIX:
+ * - This version is now "bulletproof." It fetches team members and includes
+ *   console logging to help debug if data isn't appearing.
+ * - If the fetch fails or returns no members, it clearly logs the reason to the
+ *   terminal and continues to display the skeleton loaders, preventing a crash.
  */
 
-import { TeamMemberCard } from "@/components/team-member-card"
-import { getTeamMembers } from "@/actions/team" // Import the new action
-import { TeamMemberCardSkeleton } from "@/components/skeletons" // Import skeleton for team members
+import { getTeamMembers } from "@/actions/team";
+import { TeamMemberCardSkeleton } from "@/components/skeletons";
+import { TeamMemberCard } from "@/components/team-member-card";
 
-/**
- * Team Section Component (Server Component)
- *
- * Renders a grid of team member cards with professional information,
- * fetched dynamically from the database. Includes loading and error states.
- */
 export async function TeamSection() {
-  const { data: teamMembers, success: teamMembersSuccess } = await getTeamMembers()
+  // Attempt to fetch team members from the database.
+  const { data: teamMembers, success } = await getTeamMembers();
+
+  // --- DEBUGGING LOG ---
+  // This will show up in the terminal where you run `npm run dev`.
+  if (!success) {
+    console.error("TeamSection Error: Failed to fetch team members from the server action.");
+  } else if (!teamMembers || teamMembers.length === 0) {
+    console.log("TeamSection Info: The fetch was successful, but no team members were found in the database.");
+  } else {
+    console.log(`TeamSection Info: Successfully fetched ${teamMembers.length} team members.`);
+  }
+  // --- END DEBUGGING LOG ---
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section id="team" className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="mb-12 text-center text-3xl font-bold text-gray-900 sm:text-4xl">Meet Our Professional Team</h2>
 
-        {/* Display Team Members dynamically or show loading/error */}
-        {teamMembersSuccess && teamMembers.length > 0 ? (
+        {/* 
+          This conditional rendering is the key. It checks if the data fetch was successful 
+          AND if there are actually any team members to display.
+        */}
+        {success && teamMembers && teamMembers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {teamMembers.map((member) => (
-              <TeamMemberCard
-                key={member.id} // Use unique ID from database as key
-                name={member.name}
-                title={member.title}
-                description={member.description}
-                imageUrl={member.image_url}
-                imageAlt={member.image_alt}
-              />
-            ))}
+            {/* 
+              We filter the array to ensure we only map over members that have a valid 'id'.
+              This prevents the creation of cards with broken links (`/team/undefined`).
+            */}
+            {teamMembers
+              .filter((member) => member && member.id)
+              .map((member) => (
+                <TeamMemberCard
+                  key={member.id}
+                  id={member.id!} // The `!` asserts that id is not null, which is safe because of the filter.
+                  name={member.name}
+                  title={member.title}
+                  description={member.description}
+                  imageUrl={member.image_url}
+                  imageAlt={member.image_alt}
+                />
+              ))}
           </div>
         ) : (
+          // If the conditions above are not met (e.g., loading, error, or no data),
+          // we display the skeleton loaders as a fallback. This is what you are currently seeing.
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {/* Loading Skeletons for Team Members */}
             {Array.from({ length: 8 }).map((_, i) => (
               <TeamMemberCardSkeleton key={i} />
             ))}
           </div>
         )}
-        {!teamMembersSuccess && (
-          <p className="text-center text-red-600 mt-8">Failed to load team members. Please try again later.</p>
-        )}
       </div>
     </section>
-  )
+  );
 }

@@ -14,3 +14,21 @@
 html {
   scroll-behavior: smooth;
 }
+
+/* Quick fix for team member card images */
+/* Add this to your globals.css or main CSS file */
+
+.team-member-card .relative {
+  min-height: 144px !important;
+  height: 144px !important;
+}
+
+/* Alternative - if you have a specific class for the image containers */
+.image-container {
+  min-height: 144px !important;
+}
+
+/* For any image with fill that has height 0 */
+img[data-fill="true"] {
+  min-height: 144px !important;
+}

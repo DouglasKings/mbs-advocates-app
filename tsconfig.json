@@ -18,11 +18,13 @@
         "name": "next"
       }
     ],
+    // --- THIS IS THE FIX ---
+    "baseUrl": ".", // Tells TypeScript the root for path aliases
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"] // Confirms that @/ maps to the src folder
     },
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "next.config.mjs"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

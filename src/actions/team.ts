@@ -2,68 +2,82 @@
  * Team Member Server Actions
  * =========================
  *
- * Handles server-side operations for team members including:
- * - Fetching all team members for display
- *
- * Features:
- * - Type-safe database operations
- * - Proper error handling
+ * Handles all server-side database operations related to team members.
+ * This includes fetching all members for the main page and fetching a
+ * single member by their unique ID for the detail page.
  */
 
-"use server"
+"use server";
 
-import { supabase, hasSupabase } from "@/lib/db"
-import { TABLE_NAMES, type TeamMember } from "@/lib/schema"
+import { supabase, hasSupabase } from "@/lib/db";
+import { TABLE_NAMES, type TeamMember } from "@/lib/schema";
 
-/* ------------------------------------------------------------------ */
-/* Fetch Team Members Server Action                                   */
-/* ------------------------------------------------------------------ */
-
-/**
- * Get Team Members
- *
- * Fetches all team members from the database.
- * Orders them by the 'order' column (if available), then by creation date.
- *
- * @returns Array of team members or empty array if none/error
- */
+/* ================================================================= */
+/*                  Fetch All Team Members                           */
+/* ================================================================= */
 export async function getTeamMembers() {
-  // Handle missing database configuration gracefully
+  // Gracefully handle the case where Supabase is not configured.
   if (!hasSupabase) {
-    console.error("Supabase not configured. Cannot fetch team members.")
-    return {
-      success: false,
-      data: [] as TeamMember[],
-      message: "Team members unavailable due to database configuration.",
+    console.error("getTeamMembers Error: Supabase client is not available. Check your .env.local file.");
+    return { success: false, data: [] as TeamMember[], message: "Database not configured." };
+  }
+
+  try {
+    // Perform the database query to get all team members.
+    const { data, error } = await supabase!
+      .from(TABLE_NAMES.TEAM_MEMBERS)
+      .select("*")
+      .order("order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    // --- THIS IS THE CRITICAL DEBUGGING STEP ---
+    // If the query returns an error, log it to the terminal in detail.
+    if (error) {
+      console.error("Supabase Database Error (fetching team members):", error.message);
+      return { success: false, data: [] as TeamMember[], message: `Database error: ${error.message}` };
     }
+
+    // If the query is successful but returns no data, log that information.
+    if (!data || data.length === 0) {
+      console.log("Supabase Info: The query was successful, but no team members were found in the database.");
+    }
+
+    // If successful, return the data.
+    return { success: true, data: (data as TeamMember[]) ?? [] };
+  } catch (err) {
+    // Catch any other unexpected errors during the process.
+    console.error("Unexpected Error in getTeamMembers:", err);
+    return { success: false, data: [] as TeamMember[], message: "An unexpected server error occurred." };
+  }
+}
+
+/* ================================================================= */
+/*                  Fetch a Single Team Member by ID                 */
+/* ================================================================= */
+export async function getTeamMemberById(id: string) {
+  if (!hasSupabase) {
+    console.error("getTeamMemberById Error: Supabase client is not available.");
+    return { success: false, data: null, message: "Database not configured." };
+  }
+  if (!id || typeof id !== "string") {
+    return { success: false, data: null, message: "Invalid ID provided." };
   }
 
   try {
     const { data, error } = await supabase!
       .from(TABLE_NAMES.TEAM_MEMBERS)
-      .select("id, name, title, description, image_url, image_alt, order, created_at")
-      .order("order", { ascending: true }) // Order by custom order
-      .order("created_at", { ascending: false }) // Fallback order by newest first
+      .select("*")
+      .eq("id", id)
+      .single();
 
     if (error) {
-      console.error("Database error (fetching team members):", error)
-      return {
-        success: false,
-        data: [] as TeamMember[],
-        message: "Failed to load team members.",
-      }
+      console.error(`Supabase Database Error (fetching team member with ID ${id}):`, error.message);
+      return { success: false, data: null, message: "Team member not found." };
     }
 
-    return {
-      success: true,
-      data: (data as TeamMember[]) ?? [],
-    }
+    return { success: true, data: data as TeamMember | null };
   } catch (err) {
-    console.error("Unexpected error fetching team members:", err)
-    return {
-      success: false,
-      data: [] as TeamMember[],
-      message: "Failed to load team members.",
-    }
+    console.error(`Unexpected error in getTeamMemberById for ID ${id}:`, err);
+    return { success: false, data: null, message: "An unexpected server error occurred." };
   }
 }

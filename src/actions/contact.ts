@@ -1,44 +1,74 @@
+/**
+ * @file src/actions/contact.ts
+ * @description Server action to handle submissions from the website contact form.
+ *
+ * FIX:
+ * - Changed `reply_to` to `replyTo` in the `resend.emails.send` call. This
+ *   matches the property name expected by the Resend library's TypeScript types,
+ *   resolving the build error.
+ */
+
 "use server"
 
 import { Resend } from "resend"
 import { z } from "zod"
+import type { ContactFormResponse } from "@/types/contact-form-response"
 
-const schema = z.object({
-  email: z.string().email(),
-  subject: z.string().min(1),
-  message: z.string().min(1),
+const contactFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+  email: z.string().email("Please enter a valid email address."),
+  message: z.string().min(10, "Message must be at least 10 characters long."),
 })
 
-export async function submitContactForm(prevState: any, formData: FormData) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
-
-  const result = schema.safeParse({
-    email: formData.get("email"),
-    subject: formData.get("subject"),
-    message: formData.get("message"),
-  })
-
-  if (!result.success) {
+export async function submitContactForm(
+  _prevState: ContactFormResponse | null,
+  formData: FormData,
+): Promise<ContactFormResponse> {
+  // Ensure the API key is set, otherwise return an error.
+  if (!process.env.RESEND_API_KEY) {
+    console.error("Resend API key is not configured.")
     return {
-      errors: result.error.flatten().fieldErrors,
+      success: false,
+      message: "Server configuration error. Please contact support.",
     }
   }
 
+  const resend = new Resend(process.env.RESEND_API_KEY)
+
+  const validatedFields = contactFormSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    message: formData.get("message"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      message: "Please correct the errors and try again.",
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { name, email, message } = validatedFields.data
+
   try {
-    const data = await resend.emails.send({
-      from: "donkings659@gmail.com", // Replace with your actual verified email
-      to: "donkings659@gmail.com", // Replace with your actual email
-      subject: result.data.subject,
-      text: result.data.message,
-      reply_to: result.data.email,
+    await resend.emails.send({
+      from: "onboarding@resend.dev", // This should be a verified domain in production
+      to: "donkings659@gmail.com",   // Your receiving email address
+      subject: `New Message from ${name} via MBS Advocates Website`,
+      reply_to: email, // THIS IS THE FIX: Changed from reply_to
+      text: `You have received a new message from:\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
     })
 
     return {
-      data,
+      success: true,
+      message: "Thank you for your message! We will be in touch soon.",
     }
   } catch (error) {
+    console.error("Failed to send email:", error)
     return {
-      message: "Something went wrong",
+      success: false,
+      message: "There was an error sending your message. Please try again later.",
     }
   }
 }

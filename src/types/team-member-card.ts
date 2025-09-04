@@ -7,9 +7,10 @@
  */
 
 export interface TeamMemberCardProps {
-  name: string // Team member's full name
-  title: string // Professional title/position
-  description: string // Brief bio or description
-  imageUrl: string // URL to profile image
-  imageAlt: string // Alt text for accessibility
+  id: string // The unique ID of the team member
+  name: string
+  title: string
+  description: string
+  imageUrl: string
+  imageAlt: string
 }
