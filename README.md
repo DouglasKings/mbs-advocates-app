@@ -164,3 +164,4 @@ type nul > .env.local
 ```dotenv
 NEXT_PUBLIC_SUPABASE_URL="YOUR_SUPABASE_PROJECT_URL"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="YOUR_SUPABASE_ANON_KEY"
+"# Database updated - triggering redeploy" 
