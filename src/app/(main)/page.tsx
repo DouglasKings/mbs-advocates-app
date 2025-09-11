@@ -142,7 +142,7 @@ export default async function Home() {
             {/* An accompanying professional image to add visual context and appeal. */}
             <div className="relative w-full aspect-w-4 aspect-h-3 overflow-hidden rounded-lg shadow-lg">
               <ImageContainer
-                src="/images/team/0.jpg"
+                src="/images/team/0.webp"
                 alt="MBS Advocates professional team at work"
                 width={800}
                 height={600}
