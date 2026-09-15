@@ -33,6 +33,8 @@ import { ServiceCardSkeleton } from "@/components/skeletons";
 import type { Testimonial } from "@/lib/schema";
 // Import the standard Next.js Image component for optimized image handling
 import Image from "next/image";
+// Import the Awards & Recognition section, which showcases firm accolades and certifications
+import { AwardsSection } from "@/components/awards-section";
 
 /**
  * The main Home page component for the public-facing website.
@@ -65,6 +67,22 @@ export default async function Home() {
             className="mx-auto mb-0 object-contain mt-[-4rem]"
             priority
           />
+
+          {/*
+            Awards badge.
+            - Sits above the H1 so it's the very first credibility signal visitors see.
+            - Links down to the full Awards & Recognition section (#awards) via smooth scroll,
+              which is enabled globally by `scroll-smooth` on the <html> element in layout.tsx.
+            - Kept visually light (pill shape, small text) so it doesn't compete with the H1.
+          */}
+          <a
+            href="#awards"
+            className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-500 bg-yellow-50 px-4 py-1.5 text-xs sm:text-sm font-semibold text-yellow-800 hover:bg-yellow-100 transition-colors"
+          >
+            {"\u{1F3C6}"} Recognized among the Best 100 Law Firms in Uganda
+            2025/2026
+          </a>
+
           {/* Main heading for the firm. */}
           <h1 className="mb-4 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             MBS Advocates
@@ -75,7 +93,7 @@ export default async function Home() {
             providing exceptional legal services. Founded on principles of
             integrity, professionalism, and a deep understanding of the law, we
             strive to deliver practical and effective solutions tailored to our
-            clients' unique needs.
+            clients&apos; unique needs.
           </p>
           {/* A clear call-to-action button that smoothly scrolls the user to the contact section. */}
           <a
@@ -104,8 +122,8 @@ export default async function Home() {
                 vast experiences and practices of eminent lawyers, creating a
                 modern institution with deep roots in legal practice. We embody
                 the best qualities of the legal profession: tenacious,
-                adaptable, ready for hard work, and committed to our clients'
-                causes.
+                adaptable, ready for hard work, and committed to our
+                clients&apos; causes.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
                 <span className="font-bold">Our Leadership:</span>
@@ -116,7 +134,7 @@ export default async function Home() {
                 lawyer known for his strategic and effective representation.
                 <br />
                 Matovu Ronald (Partner): A key partner contributing to the
-                firm's diverse expertise and success.
+                firm&apos;s diverse expertise and success.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
                 <span className="font-bold">Our Mission:</span>
@@ -152,6 +170,13 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* ========================================================= */}
+      {/* AWARDS SECTION - Highlights firm recognitions and certifications. */}
+      {/* Placed after About (context established) and before Team,        */}
+      {/* so credibility is reinforced before visitors meet the people.    */}
+      {/* ========================================================= */}
+      <AwardsSection />
 
       {/* ========================================================= */}
       {/* TEAM SECTION - Renders the dynamic team member component. */}
@@ -222,7 +247,7 @@ export default async function Home() {
                             key={i}
                             className="h-5 w-5 fill-yellow-500 text-yellow-500"
                           />
-                        )
+                        ),
                       )}
                       {Array.from({
                         length: 5 - (testimonial.rating || 0),
@@ -230,7 +255,9 @@ export default async function Home() {
                         <Star key={i + 5} className="h-5 w-5 text-gray-300" />
                       ))}
                     </div>
-                    <p className="text-gray-700 italic mb-4">{`“${testimonial.comment}”`}</p>
+                    <p className="text-gray-700 italic mb-4">
+                      &ldquo;{testimonial.comment}&rdquo;
+                    </p>
                     <p className="font-semibold text-gray-900">
                       - {testimonial.client_name}
                     </p>
