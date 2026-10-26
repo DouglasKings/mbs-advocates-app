@@ -25,6 +25,13 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 // Check if Supabase environment variables are properly configured
 export const hasSupabase = Boolean(supabaseUrl && supabaseAnonKey)
 
+// In production builds, fail fast if Supabase is not configured
+if (process.env.NODE_ENV === "production" && !hasSupabase) {
+  throw new Error(
+    "Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL and/or NEXT_PUBLIC_SUPABASE_ANON_KEY. Set them in your deployment environment (Vercel)."
+  )
+}
+
 // Initialize the Supabase client only if both URL and key are available
 // Using non-null assertion (!) because hasSupabase ensures they are present
 export const supabase = hasSupabase ? createClient(supabaseUrl!, supabaseAnonKey!) : null
